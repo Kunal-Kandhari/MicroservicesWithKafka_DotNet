@@ -1,0 +1,22 @@
+[
+  {
+    "FundId": 1,
+    "FundName": "name",
+    "FundObjective": "obj"
+  },
+  {
+    "FundId": 1,
+    "FundName": "name",
+    "FundObjective": "obj"
+  },
+  {
+    "FundId": 1,
+    "FundName": "name",
+    "FundObjective": "obj"
+  },
+  {
+    "FundId": 1,
+    "FundName": "name",
+    "FundObjective": "obj"
+  }
+]

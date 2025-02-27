@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "SR0hN/wp2shKhnhxSgxF5J+ZoAKhA5JiFbvNdkXORxk=",
+  "Source": "MicroservicesWithKafka",
+  "BasePath": "_content/MicroservicesWithKafka",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

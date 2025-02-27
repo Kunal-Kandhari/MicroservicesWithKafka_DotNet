@@ -1,0 +1,5 @@
+MicroservicesWithKafka/bin
+MicroservicesWithKafka/Logs/*
+ConsumerService/bin
+MicroservicesWithKafka/.vs
+ConsumerService/.vs

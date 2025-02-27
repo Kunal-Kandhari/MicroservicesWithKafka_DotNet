@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "MicroservicesWithKafka.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "..\\ConsumerService\\ConsumerService.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

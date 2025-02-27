@@ -1,0 +1,65 @@
+[
+  {
+    "ContainingType": "MicroservicesWithKafka.Controllers.FundController",
+    "Method": "GetAllFunds",
+    "RelativePath": "api/funds",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MicroservicesWithKafka.Controllers.FundController",
+    "Method": "AddFund",
+    "RelativePath": "api/funds",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fund",
+        "Type": "MicroservicesWithKafka.Models.Fund",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MicroservicesWithKafka.Controllers.FundController",
+    "Method": "UpdateFund",
+    "RelativePath": "api/funds/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "fund",
+        "Type": "MicroservicesWithKafka.Models.Fund",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MicroservicesWithKafka.Controllers.FundController",
+    "Method": "DeleteFund",
+    "RelativePath": "api/funds/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
