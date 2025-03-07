@@ -17,7 +17,15 @@ namespace MicroservicesWithKafka.Services
             _kafkaProducer = kafkaProducer;
         }
 
-        public Task<List<Fund>> GetAllEntities() => _fundRepository.GetAllFunds();
+        public async Task<List<Fund>> GetAllEntities()
+        {
+            return await _fundRepository.GetAllFunds();
+        }
+
+        public async Task<Fund> GetEntityByID(int id)
+        {
+            return await _fundRepository.GetFundByID(id);
+        }
 
         //public Task GetEntity(int id) => _fundRepository.GetFundById(id);
 

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Confluent.Kafka;
+using MicroservicesWithKafka.DTO;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
@@ -34,10 +35,18 @@ namespace MicroservicesWithKafka.Kafka
 
         public async Task PublishMessage(string topic, string key, object value)
         {
+            var eventDTO = new GenericEventDTO<object>
+            {
+                EventType = key,  
+                Type = value.GetType().Name,
+                Data = value       
+            };
+
+
             var message = new Message<string, string>
             {
                 Key = key,
-                Value = JsonConvert.SerializeObject(value)
+                Value = JsonConvert.SerializeObject(eventDTO)
             };
 
             try

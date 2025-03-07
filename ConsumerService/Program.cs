@@ -5,6 +5,7 @@ using ConsumerService.Kafka;
 using Serilog;
 using MicroservicesWithKafka.Repository;
 using MicroservicesWithKafka.Kafka;
+using MicroservicesWithKafka.Models;
 
 namespace ConsumerService
 {
@@ -33,10 +34,10 @@ namespace ConsumerService
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddSingleton<IServiceFactory, ServiceFactory>();
                     services.AddSingleton<IFundRepository, FundRepository>();
-                    //services.AddSingleton<IFundService, FundService>();
+                    services.AddSingleton<IBaseService<Fund>, FundService>();
 
-                    services.AddSingleton<FundService>();
                     services.AddSingleton<BaseService>();
 
                     services.AddSingleton<KafkaProducer>(provider =>

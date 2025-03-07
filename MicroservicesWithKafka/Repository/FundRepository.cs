@@ -16,10 +16,10 @@ namespace MicroservicesWithKafka.Repository
             return Task.FromResult(ReadFromFile());
         }
 
-        public Fund GetFundById(int id)
+        public Task<Fund> GetFundByID(int id)
         {
             Log.Information($"Fetching fund with ID: {id}");
-            return ReadFromFile().Find(f => f.FundId == id);
+            return Task.FromResult(ReadFromFile().Find(f => f.FundId == id));
         }
 
         public void AddFund(Fund fund)

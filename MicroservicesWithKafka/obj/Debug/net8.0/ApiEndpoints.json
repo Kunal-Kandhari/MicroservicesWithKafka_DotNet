@@ -27,6 +27,22 @@
   },
   {
     "ContainingType": "MicroservicesWithKafka.Controllers.FundController",
+    "Method": "GetFund",
+    "RelativePath": "api/funds/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MicroservicesWithKafka.Controllers.FundController",
     "Method": "UpdateFund",
     "RelativePath": "api/funds/{id}",
     "HttpMethod": "PUT",

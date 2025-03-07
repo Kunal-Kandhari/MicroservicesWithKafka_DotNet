@@ -4,7 +4,7 @@ namespace MicroservicesWithKafka.Services
 {
     public interface IBaseService<T>
     {
-        //Task GetEntity();
+        Task<List<T>> GetAllEntities();
         Task AddEntity(T entity);
         Task UpdateEntity(T entity);
         Task DeleteEntity(int entityId);

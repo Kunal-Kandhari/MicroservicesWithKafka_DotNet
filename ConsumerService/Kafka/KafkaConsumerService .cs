@@ -39,37 +39,12 @@ namespace ConsumerService.Kafka
                 {
                     try
                     {
-                        //var consumeResult = consumer.Consume(stoppingToken);
-
-                        //Log.Information($"Consumed message: {consumeResult.Message.Value}");
-
-                        //var fund = JsonConvert.DeserializeObject<Fund>(consumeResult.Message.Value);
-
-                        //var fundEvent = new FundEvent();
-
-                        //fundEvent.Fund = fund;
-
-                        //fundEvent.EventType = consumeResult.Message.Key;
-
-                        //Log.Information($"Consumed message with Key: {consumeResult.Message.Key}, Event Type: {fundEvent.EventType}");
-
-                        //await ProcessMessage(fundEvent);
-
-                        //// TODO check await
-                        //consumer.Commit(consumeResult);
-
-
                         var consumeResult = consumer.Consume(stoppingToken);
 
                         Log.Information($"Consumed message: {consumeResult.Message.Value}");
 
-                        var eventDTO = JsonConvert.DeserializeObject<GenericEventDTO<object>>(consumeResult.Message.Value);
-
-                        // Log the consumed message
-                        Log.Information($"Consumed message with EventType: {eventDTO.EventType}");
-
-                        // Call the generic service with the appropriate entity
-                        await _baseService.HandleEvent(eventDTO);
+                        
+                        await _baseService.HandleEvent<object>(consumeResult.Message.Value);
 
                         // TODO check await
                         consumer.Commit(consumeResult);
@@ -89,28 +64,6 @@ namespace ConsumerService.Kafka
                 consumer.Close(); 
             }
         }
-
-        //private async Task ProcessMessage(FundEvent fundEvent)
-        //{
-        //    switch (fundEvent.EventType)
-        //    {
-        //        case "CREATE":
-        //            await _fundService.AddFund(fundEvent.Fund);
-        //            Log.Information($"Created fund with ID: {fundEvent.Fund.FundId}");
-        //            break;
-        //        case "UPDATE":
-        //            await _fundService.UpdateFund(fundEvent.Fund);
-        //            Log.Information($"Updated fund with ID: {fundEvent.Fund.FundId}");
-        //            break;
-        //        case "DELETE":
-        //            await _fundService.DeleteFund(fundEvent.Fund.FundId);
-        //            Log.Information($"Deleted fund with ID: {fundEvent.Fund.FundId}");
-        //            break;
-        //        default:
-        //            Log.Warning("Unknown event type received.");
-        //            break;
-        //    }
-        //}
     }
 
     public class FundEvent

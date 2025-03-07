@@ -1,37 +1,116 @@
 ﻿using MicroservicesWithKafka.DTO;
 using MicroservicesWithKafka.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Serilog;
+using System.Reflection;
+using System.Security.Principal;
+using System.Text.Json;
 
 namespace MicroservicesWithKafka.Services
 {
     public class BaseService
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceFactory _servicefactory;
 
-        public BaseService(IServiceProvider serviceProvider)
+        private readonly Dictionary<string, Type> _typeMap = new Dictionary<string, Type>
+                                                                                    {
+                                                                                            { "fund", typeof(Fund) }
+                                                                                    };
+
+
+
+        public BaseService(IServiceFactory servicefactory)
         {
-            _serviceProvider = serviceProvider;
-        }
+            _servicefactory = servicefactory;
+        }        
 
-
-        public async Task<object> HandleEvent<T>(GenericEventDTO<T> eventDTO) where T : class
+        public async Task<object> HandleEvent<T>(string messageValue) where T : class
         {
-            IBaseService<T> service = GetService<T>();
+            var typeInfo = ExtractInfo(messageValue, "Type");
+
+            if (typeInfo == null || !_typeMap.TryGetValue(typeInfo, out Type entityType))
+            {
+                Log.Error("Unable to fetch Type from request!!!");
+                return false;
+            }
+
+            var eventDTO = JsonConvert.DeserializeObject<GenericEventDTO<T>>(messageValue);
+
+            var service = _servicefactory.GetService(messageValue);
+
+            if (service == null)
+            {
+                Log.Error("Unable to fetch Service!!!");
+                return null;
+            }
+
+            Type serviceType = service.GetType();
+
+            MethodInfo processMethod;
 
             switch (eventDTO.EventType)
             {
                 case "GET_ALL":
-                    return await GetAllEntities<T>();
+                    processMethod = serviceType.GetMethod("GetAllEntities");
+                    if (processMethod != null)
+                    {
+                        return processMethod.Invoke(service, null);
+                    } 
+                    else
+                    {
+                        Log.Error($"Unable to find Method: GetAllEntities in Service: {service.ToString()}");
+                    }
+                    break;
+
+                case "GET_BY_ID":
+                    processMethod = serviceType.GetMethod("GetEntityByID");
+                    if (processMethod != null)
+                    {
+                        object id = (object)GetEntityId(JsonConvert.DeserializeObject(ExtractInfo(messageValue, "Data"), entityType));
+                        return processMethod.Invoke(service, new[] { id });
+                    }
+                    else
+                    {
+                        Log.Error($"Unable to find Method: GetEntityByID in Service: {service.ToString()}");
+                    }
+                    break;
 
                 case "CREATE":
-                    await service.AddEntity(eventDTO.Data);
+                    processMethod = serviceType.GetMethod("AddEntity");
+                    if (processMethod != null)
+                    {
+                        processMethod.Invoke(service, new[] { JsonConvert.DeserializeObject(ExtractInfo(messageValue, "Data"), entityType) });
+                    }
+                    else
+                    {
+                        Log.Error($"Unable to find Method: AddEntity in Service: {service.ToString()}");
+                    }
                     break;
 
                 case "UPDATE":
-                    await service.UpdateEntity(eventDTO.Data);
+                    processMethod = serviceType.GetMethod("UpdateEntity");
+                    if (processMethod != null)
+                    {
+                        processMethod.Invoke(service, new[] { JsonConvert.DeserializeObject(ExtractInfo(messageValue, "Data"), entityType) });
+                    }
+                    else
+                    {
+                        Log.Error($"Unable to find Method: UpdateEntity in Service: {service.ToString()}");
+                    }
                     break;
 
                 case "DELETE":
-                    await service.DeleteEntity(GetEntityId(eventDTO.Data));
+                    processMethod = serviceType.GetMethod("DeleteEntity");
+                    if (processMethod != null)
+                    {
+                        object id = (object)GetEntityId(JsonConvert.DeserializeObject(ExtractInfo(messageValue, "Data"), entityType));
+                        processMethod.Invoke(service, new[] { id });
+                    }
+                    else
+                    {
+                        Log.Error($"Unable to find Method: DeleteEntity in Service: {service.ToString()}");
+                    }
                     break;
 
                 default:
@@ -41,18 +120,6 @@ namespace MicroservicesWithKafka.Services
             return null;
         }
 
-
-        private IBaseService<T> GetService<T>()
-        {
-            if (typeof(T) == typeof(Fund))
-            {
-                return _serviceProvider.GetRequiredService<FundService>() as IBaseService<T>;
-            }
-
-            throw new InvalidOperationException("No service found for this entity type");
-        }
-
-
         private int GetEntityId<T>(T data) where T : class
         {
             if (data is Fund fund)
@@ -61,12 +128,46 @@ namespace MicroservicesWithKafka.Services
             throw new InvalidOperationException("Entity has no Id");
         }
 
-        private async Task<List<T>> GetAllEntities<T>() where T : class
+        private string ExtractInfo(string json, string field)
         {
-            if (typeof(T) == typeof(Fund))
+            try
             {
-                var fundService = _serviceProvider.GetRequiredService<FundService>();
-                return await fundService.GetAllEntities() as List<T>;
+                JObject jObject = JObject.Parse(json);
+                return jObject[field]?.ToString().ToLower();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static bool TryDeserializeToDTO<T>(string json, out T result)
+        {
+            try
+            {
+                result = JsonConvert.DeserializeObject<T>(json);
+                return result != null;
+            }
+            catch 
+            {
+                result = default;
+                return false;
+            }
+        }
+
+        private async Task<List<T>> GetAllEntities<T>(GenericEventDTO<T> eventDTO) where T : class
+        {
+            //if (eventDTO.Data is Fund)
+            //{
+            //    var fundService = _servicefactory.GetService<T>(eventDTO);
+            //    return await fundService.GetAllEntities() as List<T>;
+            //}
+            
+            if (TryDeserializeToDTO(JsonConvert.SerializeObject(eventDTO.Data), out Fund fundDTO))
+            {
+                //var fundService = _servicefactory.GetService<T>(eventDTO);
+                //var fundService = _serviceProvider.GetRequiredService<FundService>() as IBaseService<T>; 
+                //return await fundService.GetAllEntities() as List<T>;
             }
 
             throw new InvalidOperationException("No service found for fetching all entities.");
