@@ -88,3 +88,9 @@ D:\Projects\Kafka\MicroservicesWithKafka\bin\Debug\net8.0\System.Text.Json.dll
 D:\Projects\Kafka\MicroservicesWithKafka\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 D:\Projects\Kafka\MicroservicesWithKafka\bin\Debug\net8.0\Data\fundDetails.json
 D:\Projects\Kafka\MicroservicesWithKafka\obj\Debug\net8.0\MicroservicesWithKafka.sourcelink.json
+D:\Projects\Kafka\MicroservicesWithKafka\bin\Debug\net8.0\DnsClient.dll
+D:\Projects\Kafka\MicroservicesWithKafka\bin\Debug\net8.0\MongoDB.Bson.dll
+D:\Projects\Kafka\MicroservicesWithKafka\bin\Debug\net8.0\MongoDB.Driver.dll
+D:\Projects\Kafka\MicroservicesWithKafka\bin\Debug\net8.0\SharpCompress.dll
+D:\Projects\Kafka\MicroservicesWithKafka\bin\Debug\net8.0\Snappier.dll
+D:\Projects\Kafka\MicroservicesWithKafka\bin\Debug\net8.0\ZstdSharp.dll

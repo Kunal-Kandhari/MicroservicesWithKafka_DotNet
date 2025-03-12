@@ -136,6 +136,10 @@
       "Fund": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
           "fundId": {
             "type": "integer",
             "format": "int32"

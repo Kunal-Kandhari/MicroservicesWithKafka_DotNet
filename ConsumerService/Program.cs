@@ -25,8 +25,6 @@ namespace ConsumerService
 
             var host = builder.Build();
 
-            //host.UseSerilogRequestLogging();
-
             await host.RunAsync();
         }
 
@@ -34,6 +32,10 @@ namespace ConsumerService
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    var configuration = hostContext.Configuration;
+
+                    services.Configure<FundsDatabaseSettings>(configuration.GetSection("FundsDatabase"));
+
                     services.AddSingleton<IServiceFactory, ServiceFactory>();
                     services.AddSingleton<IFundRepository, FundRepository>();
                     services.AddSingleton<IBaseService<Fund>, FundService>();
@@ -41,11 +43,11 @@ namespace ConsumerService
                     services.AddSingleton<BaseService>();
 
                     services.AddSingleton<KafkaProducer>(provider =>
-                                    new KafkaProducer("localhost:9092"));
+                                    new KafkaProducer(configuration.GetSection("Kafka:BootstrapServers").Value));
 
                     // Register Kafka Consumer as a background service
                     services.AddHostedService<KafkaConsumerService>(provider =>
-                        new KafkaConsumerService("localhost:9092", provider.GetRequiredService<BaseService>()));
+                        new KafkaConsumerService(configuration.GetSection("Kafka:BootstrapServers").Value, provider.GetRequiredService<BaseService>()));
                 });
     }
 

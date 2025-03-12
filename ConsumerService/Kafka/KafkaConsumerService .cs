@@ -42,8 +42,7 @@ namespace ConsumerService.Kafka
                         var consumeResult = consumer.Consume(stoppingToken);
 
                         Log.Information($"Consumed message: {consumeResult.Message.Value}");
-
-                        
+                                                
                         await _baseService.HandleEvent<object>(consumeResult.Message.Value);
 
                         // TODO check await

@@ -99,3 +99,9 @@ D:\Projects\Kafka\ConsumerService\obj\Debug\net8.0\ConsumerService.pdb
 D:\Projects\Kafka\ConsumerService\obj\Debug\net8.0\ConsumerService.genruntimeconfig.cache
 D:\Projects\Kafka\ConsumerService\obj\Debug\net8.0\ref\ConsumerService.dll
 D:\Projects\Kafka\ConsumerService\obj\Debug\net8.0\ConsumerService.sourcelink.json
+D:\Projects\Kafka\ConsumerService\bin\Debug\net8.0\DnsClient.dll
+D:\Projects\Kafka\ConsumerService\bin\Debug\net8.0\MongoDB.Bson.dll
+D:\Projects\Kafka\ConsumerService\bin\Debug\net8.0\MongoDB.Driver.dll
+D:\Projects\Kafka\ConsumerService\bin\Debug\net8.0\SharpCompress.dll
+D:\Projects\Kafka\ConsumerService\bin\Debug\net8.0\Snappier.dll
+D:\Projects\Kafka\ConsumerService\bin\Debug\net8.0\ZstdSharp.dll

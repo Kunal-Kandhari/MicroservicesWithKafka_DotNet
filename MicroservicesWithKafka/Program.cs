@@ -25,8 +25,10 @@ builder.Services.AddSingleton<IFundRepository, FundRepository>();
 builder.Services.AddSingleton<IBaseService<Fund>, FundService>();
 
 builder.Services.AddSingleton<KafkaProducer>(provider =>
-                                    new KafkaProducer("localhost:9092"));
+                                    new KafkaProducer(builder.Configuration.GetSection("Kafka:BootstrapServers").Value));
 builder.Services.AddSingleton<BaseService>();
+
+builder.Services.Configure<FundsDatabaseSettings>(builder.Configuration.GetSection("FundsDatabase"));
 
 
 var app = builder.Build();
