@@ -33,6 +33,19 @@ namespace MicroservicesWithKafka.Repository
             //return Task.FromResult(ReadFromFile());
         }
 
+        public async Task<(List<Fund> Items, int TotalCount)> GetPagedFunds(int page, int pageSize)
+        {
+            var filter = Builders<Fund>.Filter.Empty;
+            var totalCount = await _fundsCollection.CountDocumentsAsync(filter);
+
+            var items = await _fundsCollection.Find(filter)
+                                                        .Skip((page - 1) * pageSize)
+                                                        .Limit(pageSize)
+                                                        .ToListAsync();
+
+            return (items, (int)totalCount);
+        }
+
         public Task<Fund> GetFundByID(int id)
         {
             Log.Information($"Fetching fund with ID: {id}");

@@ -10,13 +10,14 @@ namespace ConsumerService.Kafka
 {
     public class KafkaConsumerService : BackgroundService
     {
-        private readonly string _topic = "fund-events"; 
+        private readonly IEnumerable<string> _topics;
         private readonly string _bootstrapServers;
         private readonly BaseService _baseService;
 
-        public KafkaConsumerService(string bootstrapServers, BaseService baseService)
+        public KafkaConsumerService(string bootstrapServers, IEnumerable<string> topics, BaseService baseService)
         {
             _bootstrapServers = bootstrapServers;
+            _topics = topics;
             _baseService = baseService;
         }
 
@@ -26,12 +27,12 @@ namespace ConsumerService.Kafka
             var config = new ConsumerConfig
             {
                 BootstrapServers = _bootstrapServers,
-                GroupId = "fund-events-consumer-group",
+                GroupId = "multi-topic-consumer-group",
                 AutoOffsetReset = AutoOffsetReset.Earliest 
             };
 
             using var consumer = new ConsumerBuilder<string, string>(config).Build();
-            consumer.Subscribe(_topic);
+            consumer.Subscribe(_topics);
 
             try
             {
@@ -41,8 +42,8 @@ namespace ConsumerService.Kafka
                     {
                         var consumeResult = consumer.Consume(stoppingToken);
 
-                        Log.Information($"Consumed message: {consumeResult.Message.Value}");
-                                                
+                        Log.Information($"Consumed message from topic {consumeResult.Topic}: {consumeResult.Message.Value}");
+
                         await _baseService.HandleEvent<object>(consumeResult.Message.Value);
 
                         // TODO check await

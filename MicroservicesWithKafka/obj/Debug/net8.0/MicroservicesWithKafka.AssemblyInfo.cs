@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MicroservicesWithKafka")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4371b4fa81c475ea17c06fbe021262728a429a13")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5df0008bb7125866d4cd71b05a9ed79f8c6b4ffa")]
 [assembly: System.Reflection.AssemblyProductAttribute("MicroservicesWithKafka")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MicroservicesWithKafka")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -63,6 +63,28 @@ namespace MicroservicesWithKafka.Services
                     }
                     break;
 
+                case "GET_PAGED_ENTITIES":
+                    processMethod = serviceType.GetMethod("GetPagedEntities");
+                    if (processMethod != null)
+                    {   
+                        int page = 1;
+                        int pageSize = 10;
+
+                        JObject jObject = JObject.Parse(messageValue);
+
+                        if (jObject["Page"] != null)
+                            page = jObject["Page"].Value<int>();
+                        if (jObject["PageSize"] != null)
+                            pageSize = jObject["PageSize"].Value<int>();
+
+                        return processMethod.Invoke(service, new object[] { page, pageSize });
+                    }
+                    else
+                    {
+                        Log.Error($"Unable to find Method: GetPagedEntities in Service: {service.ToString()}");
+                    }
+                    break;
+
                 case "GET_BY_ID":
                     processMethod = serviceType.GetMethod("GetEntityByID");
                     if (processMethod != null)

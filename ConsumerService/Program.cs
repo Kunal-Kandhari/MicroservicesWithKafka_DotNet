@@ -6,6 +6,7 @@ using Serilog;
 using MicroservicesWithKafka.Repository;
 using MicroservicesWithKafka.Kafka;
 using MicroservicesWithKafka.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace ConsumerService
 {
@@ -47,7 +48,9 @@ namespace ConsumerService
 
                     // Register Kafka Consumer as a background service
                     services.AddHostedService<KafkaConsumerService>(provider =>
-                        new KafkaConsumerService(configuration.GetSection("Kafka:BootstrapServers").Value, provider.GetRequiredService<BaseService>()));
+                        new KafkaConsumerService(configuration.GetSection("Kafka:BootstrapServers").Value,
+                                                    configuration.GetSection("Kafka:Topics").Get<string[]>() ?? new[] { "fund-events" },
+                                                    provider.GetRequiredService<BaseService>()));
                 });
     }
 

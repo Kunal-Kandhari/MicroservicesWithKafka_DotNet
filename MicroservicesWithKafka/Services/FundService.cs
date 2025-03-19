@@ -22,12 +22,15 @@ namespace MicroservicesWithKafka.Services
             return await _fundRepository.GetAllFunds();
         }
 
+        public async Task<(List<Fund> Items, int TotalCount)> GetPagedEntities(int page, int pageSize)
+        {
+            return await _fundRepository.GetPagedFunds(page, pageSize);
+        }
+
         public async Task<Fund> GetEntityByID(int id)
         {
             return await _fundRepository.GetFundByID(id);
         }
-
-        //public Task GetEntity(int id) => _fundRepository.GetFundById(id);
 
         public async Task AddEntity(Fund fund)
         {
@@ -38,7 +41,7 @@ namespace MicroservicesWithKafka.Services
         public async Task UpdateEntity(Fund fund)
         {
             _fundRepository.UpdateFund(fund);
-            await _kafkaProducer.PublishMessage("fund-events", "UPDATE", fund);
+            await _kafkaProducer.PublishMessage("user-events", "UPDATE", fund);
         }
 
         public async Task DeleteEntity(int id)
