@@ -98,6 +98,23 @@ namespace MicroservicesWithKafka.Services
                     }
                     break;
 
+                case "FILTER_BY_FIELD":
+                    processMethod = serviceType.GetMethod("FilterEntitiesByField");
+                    if (processMethod != null)
+                    {
+                        JObject jObject = JObject.Parse(messageValue);
+
+                        string field = jObject["Field"]?.ToString();
+                        string value = jObject["Value"]?.ToString();
+
+                        return processMethod.Invoke(service, new object[] { field, value });
+                    }
+                    else
+                    {
+                        Log.Error($"Unable to find Method: FilterEntitiesByField in Service: {service}");
+                    }
+                    break;
+
                 case "CREATE":
                     processMethod = serviceType.GetMethod("AddEntity");
                     if (processMethod != null)

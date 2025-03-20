@@ -2,12 +2,10 @@
 using MicroservicesWithKafka.DTO;
 using MicroservicesWithKafka.Models;
 using MicroservicesWithKafka.Services;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
+using Serilog;
 
 namespace MicroservicesWithKafka.Controllers
 {
@@ -16,15 +14,19 @@ namespace MicroservicesWithKafka.Controllers
     public class FundController : ControllerBase
     {
         private readonly BaseService _baseService;
+        private readonly IEncryptionService _encryptionService;
 
-        public FundController(BaseService baseService)
+        public FundController(BaseService baseService, IEncryptionService encryptionService)
         {
             _baseService = baseService;
+            _encryptionService = encryptionService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllFunds()
         {
+            //string encryptedField = _encryptionService.Encrypt("FundName");
+
             var fundEventDTO = new GenericEventDTO<Fund>
             {
                 EventType = "GET_ALL",
@@ -140,6 +142,66 @@ namespace MicroservicesWithKafka.Controllers
             else
             {
                 throw new InvalidCastException("Invalid Result.");
+            }
+        }
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> FilterFunds([FromQuery] string field, [FromQuery] string value)
+        {
+            if (string.IsNullOrEmpty(field) || string.IsNullOrEmpty(value))
+            {
+                return BadRequest(new { message = "Field and value parameters are required." });
+            }
+
+            // The field parameter has already been decrypted by the middleware
+            Serilog.Log.Information($"Filtering funds by field: {field} with value: {value}");
+
+            var fundEventDTO = new GenericEventDTO<Fund>
+            {
+                EventType = "FILTER_BY_FIELD",
+                Type = "fund",
+                Data = new Fund()
+            };
+
+            var eventData = JsonConvert.SerializeObject(fundEventDTO);
+            var jsonObject = JObject.Parse(eventData);
+
+            jsonObject["Field"] = field;
+            jsonObject["Value"] = value;
+
+
+            if (string.IsNullOrEmpty(field) || string.IsNullOrEmpty(value))
+            {
+                Log.Error("Field or Value is missing in the filter request");
+                return StatusCode(500, new { message = "Field or Value is missing in the filter request" });
+            }
+
+            var updatedEventData = jsonObject.ToString();
+
+            try
+            {
+                var result = await _baseService.HandleEvent<object>(updatedEventData) as Task<List<Fund>>;
+
+                if (result != null)
+                {
+                    var items = await result;
+
+                    if (items == null || items.Count == 0)
+                    {
+                        return NotFound(new { message = "No funds found matching the criteria." });
+                    }
+
+                    return Ok(items);
+                }
+                else
+                {
+                    throw new InvalidCastException("Invalid Result.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Serilog.Log.Error($"Error filtering funds: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while filtering funds." });
             }
         }
 

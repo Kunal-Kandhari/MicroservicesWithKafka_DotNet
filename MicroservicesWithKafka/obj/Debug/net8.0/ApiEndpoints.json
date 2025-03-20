@@ -80,6 +80,27 @@
   },
   {
     "ContainingType": "MicroservicesWithKafka.Controllers.FundController",
+    "Method": "FilterFunds",
+    "RelativePath": "api/funds/filter",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "field",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "value",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MicroservicesWithKafka.Controllers.FundController",
     "Method": "GetPagedFunds",
     "RelativePath": "api/funds/paged",
     "HttpMethod": "GET",

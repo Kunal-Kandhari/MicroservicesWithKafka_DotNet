@@ -55,6 +55,51 @@ namespace MicroservicesWithKafka.Repository
             //return Task.FromResult(ReadFromFile().Find(f => f.FundId == id));
         }
 
+        public async Task<List<Fund>> FilterFundsByField(string fieldName, string fieldValue)
+        {
+            try
+            {
+                var filterBuilder = Builders<Fund>.Filter;
+                FilterDefinition<Fund> filter;
+
+                switch (fieldName.ToLower())
+                {
+                    case "fundid":
+                        if (int.TryParse(fieldValue, out int fundIdValue))
+                        {
+                            filter = filterBuilder.Eq(f => f.FundId, fundIdValue);
+                        }
+                        else
+                        {
+                            filter = filterBuilder.Empty;
+                        }
+                        break;
+                    case "fundname":
+                        filter = filterBuilder.Regex(f => f.FundName, new MongoDB.Bson.BsonRegularExpression(fieldValue, "i"));
+                        break;
+                    case "fundobjective":
+                        filter = filterBuilder.Regex(f => f.FundObjective, new MongoDB.Bson.BsonRegularExpression(fieldValue, "i"));
+                        break;
+                    default:
+                        // a generic filter for other fields
+                        filter = filterBuilder.Regex(fieldName, new MongoDB.Bson.BsonRegularExpression(fieldValue, "i"));
+                        break;
+                }
+
+                var totalCount = await _fundsCollection.CountDocumentsAsync(filter);
+
+                var items = await _fundsCollection.Find(filter)
+                    .ToListAsync();
+
+                return items;
+            }
+            catch (Exception ex)
+            {
+                Serilog.Log.Error($"Error filtering funds by field: {ex.Message}");
+                throw;
+            }
+        }
+
         public void AddFund(Fund fund)
         {
             //var funds = ReadFromFile();

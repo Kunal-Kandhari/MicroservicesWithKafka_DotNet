@@ -32,6 +32,11 @@ namespace MicroservicesWithKafka.Services
             return await _fundRepository.GetFundByID(id);
         }
 
+        public async Task<List<Fund>> FilterEntitiesByField(string fieldName, string fieldValue)
+        {
+            return await _fundRepository.FilterFundsByField(fieldName, fieldValue);
+        }
+
         public async Task AddEntity(Fund fund)
         {
             _fundRepository.AddFund(fund);

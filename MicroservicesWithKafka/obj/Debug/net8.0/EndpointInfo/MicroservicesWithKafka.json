@@ -161,6 +161,34 @@
           }
         }
       }
+    },
+    "/api/funds/filter": {
+      "get": {
+        "tags": [
+          "Fund"
+        ],
+        "parameters": [
+          {
+            "name": "field",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "value",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
